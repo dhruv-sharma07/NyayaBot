@@ -119,12 +119,19 @@ python run.py
 
 ```
 NyayaBot/
-├── index.html        # Complete self-contained web application (HTML + CSS + JS)
-├── run.py            # Optional: Local HTTP server with auto-browser launch
-├── LICENSE           # MIT License
+├── index.html                           # Complete self-contained web application (HTML + CSS + JS)
+├── NyayaBot_Hackathon_Solution_Deck.pdf # 11-Slide Executive Solution Deck (PDF)
+├── presentation_deck.html               # Interactive presentation slides (Fullscreen + Print)
+├── generate_solution_deck.py            # Python generator script for PDF deck
+├── run.py                               # Optional: Local HTTP server with auto-browser launch
+├── LICENSE                              # MIT License
 ├── .gitignore
-└── README.md         # This file
+└── README.md                            # Documentation
 ```
+
+### 📊 Hackathon Submission Resources
+- **PDF Solution Deck:** [NyayaBot_Hackathon_Solution_Deck.pdf](NyayaBot_Hackathon_Solution_Deck.pdf)
+- **Interactive Presentation Deck:** [https://dhruv-sharma07.github.io/NyayaBot/presentation_deck.html](https://dhruv-sharma07.github.io/NyayaBot/presentation_deck.html) (Navigate with `◀` `▶` Arrow keys / `Spacebar` / `F11` Fullscreen)
 
 > The entire application is a **single `index.html` file** — no build step, no bundler, no dependencies. Open it and it works.
 

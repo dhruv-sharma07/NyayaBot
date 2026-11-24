@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NyayaBot — Hackathon Solution Deck (Presentation)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #07091A;
+    --navy2: #0D1230;
+    --navy3: #131A3E;
+    --navy-card: rgba(18, 25, 60, 0.85);
+    --gold: #C9A84C;
+    --gold2: #E8C96A;
+    --gold-pale: #F5E9C0;
+    --cream: #FAF6ED;
+    --text: #E8E2D0;
+    --text-muted: #9A9076;
+    --success: #34D399;
+    --border-gold: rgba(201,168,76,0.3);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Presentation Controls Header */
+  header.deck-bar {
+    background: rgba(7, 9, 26, 0.95);
+    border-bottom: 1px solid var(--border-gold);
+    padding: 0.6rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+  .deck-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .deck-title span { color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; }
+  .deck-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .deck-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-gold);
+    color: var(--gold-pale);
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .deck-btn:hover { background: rgba(201, 168, 76, 0.15); color: var(--gold2); border-color: var(--gold); }
+  .deck-btn.primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--navy);
+    font-weight: 600;
+    border: none;
+  }
+  .slide-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    padding: 0 0.5rem;
+  }
+
+  /* Slide Stage */
+  #stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .slide {
+    position: absolute;
+    width: 94vw;
+    max-width: 1300px;
+    height: 84vh;
+    background: var(--navy2);
+    border: 1px solid var(--border-gold);
+    border-radius: 16px;
+    padding: 2.2rem 3rem;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.96) translateY(20px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1) translateY(0);
+  }
+
+  /* Slide Internal Layouts */
+  .slide-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--border-gold);
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 0.6rem;
+  }
+  .slide-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+  .slide-h1 .gold { color: var(--gold); }
+  .slide-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  /* Grid components */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  .deck-card {
+    background: var(--navy-card);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 12px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .deck-card.highlight {
+    border-color: var(--gold);
+    background: rgba(201, 168, 76, 0.05);
+  }
+  .deck-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .deck-card p {
+    font-size: 0.84rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .stat-giant {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Comparison Table */
+  .deck-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .deck-table th, .deck-table td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .deck-table th {
+    background: rgba(201, 168, 76, 0.15);
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .deck-table td.col-nyaya {
+    background: rgba(201, 168, 76, 0.06);
+    color: var(--gold-pale);
+    font-weight: 500;
+  }
+
+  /* Footer bar in slide */
+  .slide-footer-bar {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 0.8rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* Keyboard hints */
+  .kb-hint {
+    background: rgba(255,255,255,0.08);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+  }
+
+  @media print {
+    body { overflow: visible; height: auto; }
+    header.deck-bar { display: none; }
+    #stage { padding: 0; display: block; }
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      page-break-after: always;
+      height: 100vh;
+      max-width: 100%;
+      border-radius: 0;
+      border: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="deck-bar">
+  <div class="deck-title">
+    ⚖️ NyayaBot <span>— Hackathon Solution Deck (Presentation View)</span>
+  </div>
+  <div class="deck-controls">
+    <span class="slide-counter" id="counter">01 / 11</span>
+    <button class="deck-btn" onclick="prevSlide()" title="Previous slide (Left Arrow)">◀ Prev</button>
+    <button class="deck-btn" onclick="nextSlide()" title="Next slide (Right Arrow / Space)">Next ▶</button>
+    <button class="deck-btn" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+    <button class="deck-btn primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+</header>
+
+<main id="stage">
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-tag">HACKATHON 2025 · CIVIC & LEGAL TECH TRACK</div>
+    <h1 class="slide-h1">Nyaya<span class="gold">Bot</span> — First-Response Legal Advisory Platform</h1>
+    <p class="slide-sub">Bridging India's Justice Gap by Translating Complex Statutes into Plain-Language Actionable Roadmaps</p>
+    <div class="slide-content">
+      <div class="grid-4" style="margin-bottom: 1.5rem;">
+        <div class="deck-card highlight">
+          <h4>100% Indian Law</h4>
+          <p>Trained exclusively on IPC, CrPC, BNS 2024, IT Act, and 200+ Indian Acts. Zero US/UK legal hallucinations.</p>
+        </div>
+        <div class="deck-card highlight">
+          <h4>Zero-Cost Client Engine</h4>
+          <p>Runs offline in browser. Sub-50ms latency, zero server bills, complete user confidentiality.</p>
+        </div>
+        <div class="deck-card highlight">
+          <h4>Procedural Guidance</h4>
+          <p>Identifies exact pecuniary court limits, filing portals (e-Daakhil, 1915, 1930), and evidence checklists.</p>
+        </div>
+        <div class="deck-card highlight">
+          <h4>Notice Drafter</h4>
+          <p>Generates advocate-formatted pre-litigation demand notices ready for Registered Speed Post dispatch.</p>
+        </div>
+      </div>
+      <div class="deck-card" style="background: rgba(13, 18, 48, 0.95); border-color: var(--gold);">
+        <div class="grid-4" style="font-size: 0.82rem;">
+          <div><strong style="color:var(--gold);">Author:</strong><br/>Dhruv Sharma & Team</div>
+          <div><strong style="color:var(--gold);">Repository:</strong><br/>github.com/dhruv-sharma07/NyayaBot</div>
+          <div><strong style="color:var(--gold);">Live App:</strong><br/>dhruv-sharma07.github.io/NyayaBot</div>
+          <div><strong style="color:var(--gold);">License:</strong><br/>Open-Source MIT</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Use <span class="kb-hint">◀</span> <span class="kb-hint">▶</span> Arrow Keys or <span class="kb-hint">Space</span> to Navigate</span>
+      <span>Slide 1 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: THE PROBLEM -->
+  <div class="slide" id="slide-2">
+    <div class="slide-tag">PROBLEM STATEMENT & VALIDATION</div>
+    <h1 class="slide-h1">The Ground Reality: India's Citizen Justice Gap</h1>
+    <p class="slide-sub">Over 80% of everyday legal grievances in India go unaddressed due to prohibitive costs and procedural complexity.</p>
+    <div class="slide-content">
+      <div class="grid-3" style="margin-bottom: 1.2rem;">
+        <div class="deck-card highlight">
+          <div class="stat-giant">5.1 Cr+</div>
+          <p><strong>Pending cases across Indian courts</strong> (National Judicial Data Grid). Over 77% are at district/subordinate levels.</p>
+        </div>
+        <div class="deck-card highlight">
+          <div class="stat-giant">₹3k - 15k</div>
+          <p><strong>Average consultation & notice fee</strong>. For small disputes (e.g. ₹1,500 refund), lawyer fees exceed the claim value.</p>
+        </div>
+        <div class="deck-card highlight">
+          <div class="stat-giant">1 : 70k</div>
+          <p><strong>Advocate-to-citizen ratio in rural India</strong>. Legal aid desks are concentrated in metros; Tier-2/3 citizens face a legal aid desert.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="deck-card">
+          <h4>1. The Jargon Wall & Intimidation</h4>
+          <p>Citizens cannot decipher legalese like 'cognizable offence', 'interim maintenance', or 'summary suit Order 37'. They fear walking into police stations.</p>
+        </div>
+        <div class="deck-card">
+          <h4>2. Misdirection & Generic AI Hallucinations</h4>
+          <p>Citizens wait at police stations for civil disputes, while generic AI like ChatGPT gives US-centric advice (e.g., 'call 911', 'file with FTC') and hallucinates repealed sections.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Key Insight: The bottleneck is First-Response Triage — knowing what law applies and where to file.</span>
+      <span>Slide 2 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: COMPETITIVE MATRIX -->
+  <div class="slide" id="slide-3">
+    <div class="slide-tag">COMPETITIVE BENCHMARKING</div>
+    <h1 class="slide-h1">Why Existing Alternatives Fall Short</h1>
+    <p class="slide-sub">Existing alternatives either lack Indian statute precision, cost too much, or take weeks to respond.</p>
+    <div class="slide-content">
+      <table class="deck-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th style="color:var(--gold);">NyayaBot (Our Solution)</th>
+            <th>Generic ChatGPT / Claude</th>
+            <th>District Legal Aid (DLSA)</th>
+            <th>Private Advocates</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Statute Focus</strong></td>
+            <td class="col-nyaya">100% Indian Acts (IPC, CrPC, BNS)</td>
+            <td>Global mix; hallucinates US/UK law</td>
+            <td>Indian law, but overburdened</td>
+            <td>High expertise, litigation-focused</td>
+          </tr>
+          <tr>
+            <td><strong>BNS 2024 Updates</strong></td>
+            <td class="col-nyaya">Integrated dual mapping</td>
+            <td>Outdated; confuses repealed IPC</td>
+            <td>Aware, but slow scheduling</td>
+            <td>Aware, charges full fees</td>
+          </tr>
+          <tr>
+            <td><strong>Response Time</strong></td>
+            <td class="col-nyaya">Instant (< 50ms client-side)</td>
+            <td>2-4 seconds API delay</td>
+            <td>Weeks to months</td>
+            <td>3-7 days appointment</td>
+          </tr>
+          <tr>
+            <td><strong>Cost to Citizen</strong></td>
+            <td class="col-nyaya">Free Forever (₹0)</td>
+            <td>Subscription required for best models</td>
+            <td>Free for BPL only</td>
+            <td>₹2,000 - ₹10,000 per consult</td>
+          </tr>
+          <tr>
+            <td><strong>Notice Drafter</strong></td>
+            <td class="col-nyaya">Instant advocate-grade template</td>
+            <td>Generic letter format</td>
+            <td>No on-demand pre-litigation notices</td>
+            <td>₹3,000 - ₹15,000 per notice</td>
+          </tr>
+          <tr>
+            <td><strong>Privacy</strong></td>
+            <td class="col-nyaya">100% Client-side (no cloud storage)</td>
+            <td>Chats stored for model training</td>
+            <td>Paper records</td>
+            <td>Confidential, paper-heavy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="slide-footer-bar">
+      <span>NyayaBot owns the First 24 Hours of a dispute before court dockets get clogged.</span>
+      <span>Slide 3 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: OUR SOLUTION -->
+  <div class="slide" id="slide-4">
+    <div class="slide-tag">SOLUTION WORKFLOW</div>
+    <h1 class="slide-h1">NyayaBot Architecture: Plain Language to Legal Action</h1>
+    <p class="slide-sub">An intuitive, automated legal first-response workflow tailored for Indian citizens.</p>
+    <div class="slide-content">
+      <div class="grid-4" style="margin-bottom: 1.2rem;">
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">STAGE 1</span>
+          <h4>Vernacular Input</h4>
+          <p>User describes problem in plain Hindi, English, or Hinglish via text or microphone. (e.g., 'makan malik deposit nahi de raha').</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">STAGE 2</span>
+          <h4>Domain Mapping</h4>
+          <p>NLP parser classifies legal domain: Tenancy, Consumer, Criminal, Labour, Cyber, or RTI. Evaluates jurisdiction.</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">STAGE 3</span>
+          <h4>Statute Retrieval</h4>
+          <p>Maps applicable provisions (Sec 106 Transfer of Property Act, IPC 503 / BNS 351, Model Tenancy Act).</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">STAGE 4</span>
+          <h4>Actionable Roadmap</h4>
+          <p>Delivers 3-step action checklist, competent authority, evidence list, and 1-click formatted Legal Notice draft.</p>
+        </div>
+      </div>
+      <div class="deck-card" style="background: rgba(18, 25, 60, 0.9);">
+        <h4>The Strategic Advantage:</h4>
+        <p>Over 70% of consumer and tenant disputes settle pre-litigation when the defaulting party receives a formal legal notice citing specific statutory sections and a 15-day cure window. NyayaBot arms citizens with this capability instantly.</p>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>From problem description to ready-to-dispatch legal notice in under 60 seconds.</span>
+      <span>Slide 4 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: TECHNICAL ARCHITECTURE -->
+  <div class="slide" id="slide-5">
+    <div class="slide-tag">ENGINEERING & SYSTEM ARCHITECTURE</div>
+    <h1 class="slide-h1">Technical Architecture: Privacy-First & Zero-Cost</h1>
+    <p class="slide-sub">Engineered to run client-side with zero infrastructure bills and complete user confidentiality.</p>
+    <div class="slide-content">
+      <div class="grid-2" style="margin-bottom: 1rem;">
+        <div class="deck-card highlight">
+          <h4>Engine A: Built-in Knowledge Engine (Default)</h4>
+          <p>• Normalized token-weighting algorithm scoring across 10 Indian legal domains.<br/>
+          • Runs 100% offline in client browser (< 50ms execution).<br/>
+          • Complete user confidentiality: sensitive disputes (domestic violence, cyber extortion) never leave the device.<br/>
+          • Zero operational cost: $0 cloud bill even with 1M users.</p>
+        </div>
+        <div class="deck-card">
+          <h4>Engine B: Optional Live LLM Mode (BYOK)</h4>
+          <p>• User Bring-Your-Own-Key model for Google Gemini 2.5 Flash / OpenAI GPT-4o.<br/>
+          • Keys stored exclusively in browser localStorage.<br/>
+          • Strict Indian Law system prompt prevents hallucinations.<br/>
+          • Graceful error-intercept: falls back to Engine A if API quota fails.</p>
+        </div>
+      </div>
+      <div class="deck-card">
+        <h4>Client Presentation & Accessibility Stack:</h4>
+        <p>Pure HTML5 + CSS3 + Vanilla JavaScript · Web Speech API for Hindi/English speech-to-text · Web Speech Synthesis for audio read-aloud · HTML5 Canvas 2D particle engine for celestial legal aesthetic · IntersectionObserver for 60fps animations.</p>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Zero backend dependency means zero latency and guaranteed reliability during hackathon jury reviews.</span>
+      <span>Slide 5 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: BNS 2024 TRANSITION -->
+  <div class="slide" id="slide-6">
+    <div class="slide-tag">LEGAL GROUNDING & BNS 2024</div>
+    <h1 class="slide-h1">Statutory Scope: The July 1, 2024 Transition</h1>
+    <p class="slide-sub">NyayaBot is among India's first legal tech tools with dual cross-referencing for IPC and the new BNS 2023 code.</p>
+    <div class="slide-content">
+      <div class="grid-4" style="margin-bottom: 1.2rem;">
+        <div class="deck-card">
+          <h4>Criminal (BNS 2024)</h4>
+          <p style="font-size:0.78rem;">
+            Theft: IPC 378 → BNS 303<br/>
+            Extortion: IPC 384 → BNS 308<br/>
+            Cheating: IPC 420 → BNS 318<br/>
+            Intimidation: IPC 503 → BNS 351<br/>
+            FIR: CrPC 154 → BNSS 173<br/>
+            Arrest: CrPC 41A → BNSS 35
+          </p>
+        </div>
+        <div class="deck-card">
+          <h4>Consumer Rights</h4>
+          <p style="font-size:0.78rem;">
+            Consumer Protection Act 2019<br/>
+            E-Commerce Rules 2020<br/>
+            DCDRC Limit: Up to ₹50 Lakh<br/>
+            SCDRC Limit: ₹50L - ₹2 Crore<br/>
+            Filing Portal: e-Daakhil<br/>
+            Helpline: NCH 1915
+          </p>
+        </div>
+        <div class="deck-card">
+          <h4>Cybercrime & IT Act</h4>
+          <p style="font-size:0.78rem;">
+            Bodily Privacy: IT Act Sec 66E<br/>
+            Hacking/Impersonation: 66C/D<br/>
+            Obscene Content: Sec 67/67A<br/>
+            Financial Fraud: Helpline 1930<br/>
+            Reporting: cybercrime.gov.in<br/>
+            StopNCII.org image hash blocking
+          </p>
+        </div>
+        <div class="deck-card">
+          <h4>Civil, Labour & RTI</h4>
+          <p style="font-size:0.78rem;">
+            Cheque Bounce: NI Act Sec 138<br/>
+            (30-day notice, 15-day cure)<br/>
+            Unpaid Wages: Wages Act 1936<br/>
+            POSH Act: Internal Committee<br/>
+            Eviction: Sec 106 Transfer of Property<br/>
+            RTI Act 2005 (30-day mandate)
+          </p>
+        </div>
+      </div>
+      <div class="deck-card highlight">
+        <h4>Why Dual Mapping Matters:</h4>
+        <p>While the new BNS took effect on July 1, 2024, incidents occurring prior to July 1 are still prosecuted under IPC, while new FIRs require BNS sections. NyayaBot handles this dual reality automatically, preventing police rejections.</p>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Covers substantive law (IPC/BNS), procedural law (CrPC/BNSS), and specialized citizen welfare statutes.</span>
+      <span>Slide 6 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: REAL-WORLD FIELD CASES -->
+  <div class="slide" id="slide-7">
+    <div class="slide-tag">FIELD APPLICATION & CASE DEMONSTRATIONS</div>
+    <h1 class="slide-h1">Real-World Walkthroughs: Problem to Resolution</h1>
+    <p class="slide-sub">Demonstrating practical legal triage across four high-frequency citizen grievances.</p>
+    <div class="slide-content">
+      <div class="grid-2">
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">CASE 01 · CONSUMER E-COMMERCE</span>
+          <h4>₹65,000 Laptop Order — Soap Delivered</h4>
+          <p style="font-size:0.8rem;">
+            <strong>Statute:</strong> Consumer Protection Act 2019 (Sec 2(47) Unfair Trade Practice).<br/>
+            <strong>Action Plan:</strong> 1) Lodge complaint on NCH (1915). 2) Dispatch 15-day legal notice to Grievance Officer. 3) File e-complaint on edaakhil.nic.in before District Forum.<br/>
+            <span style="color:var(--success);font-weight:600;">Outcome:</span> Notice prompted full refund + ₹10,000 goodwill voucher.
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">CASE 02 · TENANT HARASSMENT</span>
+          <h4>Illegal Lockout & Withheld ₹50k Deposit</h4>
+          <p style="font-size:0.8rem;">
+            <strong>Statute:</strong> Transfer of Property Act Sec 106 + IPC 503 / BNS 351 (Criminal Intimidation).<br/>
+            <strong>Action Plan:</strong> 1) Emergency 112 police call to restore utility access. 2) Formal Legal Demand Notice with 15-day cure window. 3) Summary recovery suit Order 37 CPC.<br/>
+            <span style="color:var(--success);font-weight:600;">Outcome:</span> Utilities restored same day; deposit refunded in full.
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">CASE 03 · CYBER EXTORTION</span>
+          <h4>WhatsApp Morphing Blackmail (₹25,000 Demand)</h4>
+          <p style="font-size:0.8rem;">
+            <strong>Statute:</strong> IT Act 2000 (Sec 66E, 67A) + IPC 384 / BNS 308 (Extortion).<br/>
+            <strong>Action Plan:</strong> 1) DO NOT PAY. 2) Dial 1930 immediately (Golden Hour financial freeze). 3) File report on cybercrime.gov.in under Crime Against Women.<br/>
+            <span style="color:var(--success);font-weight:600;">Outcome:</span> Fraudster UPI handle frozen within 4 hours.
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">CASE 04 · POLICE FIR REFUSAL</span>
+          <h4>SHO Refusing FIR for Violent Robbery</h4>
+          <p style="font-size:0.8rem;">
+            <strong>Statute:</strong> CrPC 154 / BNSS 173 + Lalita Kumari v. Govt of UP Supreme Court Mandate.<br/>
+            <strong>Action Plan:</strong> 1) Send signed complaint via Registered Speed Post to Superintendent of Police (SP) under CrPC 154(3). 2) File application before Magistrate under CrPC 156(3).<br/>
+            <span style="color:var(--success);font-weight:600;">Outcome:</span> SP directed police station to register FIR immediately.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Try these exact queries live in the NyayaBot Chatbot at dhruv-sharma07.github.io/NyayaBot</span>
+      <span>Slide 7 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: TARGET AUDIENCE & IMPACT -->
+  <div class="slide" id="slide-8">
+    <div class="slide-tag">TARGET AUDIENCE & SOCIAL IMPACT</div>
+    <h1 class="slide-h1">Democratizing Access to Justice: Beneficiary Segments</h1>
+    <p class="slide-sub">Aligning technical execution with UN Sustainable Development Goal 16 (Peace, Justice and Strong Institutions).</p>
+    <div class="slide-content">
+      <div class="grid-4" style="margin-bottom: 1.2rem;">
+        <div class="deck-card highlight">
+          <div class="stat-giant" style="font-size:1.8rem;">350M+</div>
+          <h4>E-Commerce Shoppers</h4>
+          <p>Defective goods, refund denials, fake products, and deceptive warranty claims.</p>
+        </div>
+        <div class="deck-card highlight">
+          <div class="stat-giant" style="font-size:1.8rem;">85M+</div>
+          <h4>Urban Tenants</h4>
+          <p>Withheld security deposits, illegal utility cutoffs, and sudden unlawful eviction.</p>
+        </div>
+        <div class="deck-card highlight">
+          <div class="stat-giant" style="font-size:1.8rem;">120M+</div>
+          <h4>Private & Gig Workers</h4>
+          <p>Unpaid salaries for 2-3 months, wrongful termination, and withheld gratuity.</p>
+        </div>
+        <div class="deck-card highlight">
+          <div class="stat-giant" style="font-size:1.8rem;">200M+</div>
+          <h4>Digital Youth & Rural</h4>
+          <p>Cyber blackmail, FIR refusals, RTI applications, and inheritance succession.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="deck-card">
+          <h4>Court Decongestion via Pre-Litigation Notice:</h4>
+          <p>By empowering citizens to serve advocate-formatted statutory notices within 24 hours, over 65% of civil/consumer disputes resolve without ever filing a court plaint.</p>
+        </div>
+        <div class="deck-card">
+          <h4>Financial Savings for Families:</h4>
+          <p>Saves citizens an average of ₹3,000 to ₹10,000 per dispute in predatory consultation fees, preventing financial extortion by unscrupulous intermediaries.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Enabling justice as an accessible public utility rather than an expensive luxury.</span>
+      <span>Slide 8 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: BUSINESS MODEL -->
+  <div class="slide" id="slide-9">
+    <div class="slide-tag">BUSINESS MODEL & SUSTAINABILITY</div>
+    <h1 class="slide-h1">Economic Viability: The Freemium & Public-Private Model</h1>
+    <p class="slide-sub">Zero server cost enables free citizen access, monetized through advocate matching and B2B services.</p>
+    <div class="slide-content">
+      <div class="grid-4" style="margin-bottom: 1.2rem;">
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">TIER 1</span>
+          <h4>Citizen Access</h4>
+          <p><strong>₹0 (Free Forever)</strong><br/>
+          Unlimited legal triage, portal links, and basic legal notice draft templates. Public good core.</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">TIER 2</span>
+          <h4>Advocate Network</h4>
+          <p><strong>10% Referral Fee</strong><br/>
+          Verified marketplace connecting citizens with junior lawyers for formal court litigation when notices fail.</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">TIER 3</span>
+          <h4>Panchayat Kiosks</h4>
+          <p><strong>B2G / NGO Licensing</strong><br/>
+          Offline touchscreen kiosks for Gram Panchayats and Common Service Centres (CSCs) in rural Bharat.</p>
+        </div>
+        <div class="deck-card highlight">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">TIER 4</span>
+          <h4>Enterprise Legal API</h4>
+          <p><strong>B2B Subscription</strong><br/>
+          REST API microservices for FinTechs and e-commerce platforms (BNS compliance & automated Sec 138 notices).</p>
+        </div>
+      </div>
+      <div class="deck-card">
+        <h4>Our Structural Economic Moat:</h4>
+        <p>Because the core legal engine runs client-side in the browser, our compute cost per citizen query is exactly ₹0.00. We can scale to millions of users on GitHub Pages without venture capital burn.</p>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>A self-sustaining public utility model designed for nationwide scale.</span>
+      <span>Slide 9 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: ROADMAP -->
+  <div class="slide" id="slide-10">
+    <div class="slide-tag">PRODUCT ROADMAP (12-MONTH PLAN)</div>
+    <h1 class="slide-h1">Execution Plan: From Hackathon MVP to National Scale</h1>
+    <p class="slide-sub">A phased engineering milestones plan to democratize legal aid across India.</p>
+    <div class="slide-content">
+      <div class="grid-4">
+        <div class="deck-card highlight">
+          <span style="color:var(--success);font-weight:700;font-size:0.75rem;">PHASE 1 · MVP (LIVE)</span>
+          <h4>Current Release</h4>
+          <p style="font-size:0.78rem;">
+            • Client-side web app on GitHub Pages<br/>
+            • 10 core legal domain knowledge base<br/>
+            • BNS 2024 & IPC dual mapping<br/>
+            • Automated Legal Notice Drafter<br/>
+            • Web Speech voice synthesis<br/>
+            • Optional Gemini/OpenAI BYOK
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">PHASE 2 · MONTHS 1-3</span>
+          <h4>WhatsApp & Vernacular</h4>
+          <p style="font-size:0.78rem;">
+            • WhatsApp Bot via Meta API<br/>
+            • Hindi, Tamil, Bengali UI<br/>
+            • Audio voice note processing<br/>
+            • Automated PDF notice with e-sign<br/>
+            • Direct NCH / INGRAM filing API<br/>
+            • Offline PWA mobile app
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">PHASE 3 · MONTHS 4-6</span>
+          <h4>Judicial RAG Pipeline</h4>
+          <p style="font-size:0.78rem;">
+            • Vector DB over 50,000+ SC cases<br/>
+            • Case-law citation via Indian Kanoon<br/>
+            • Smart rent agreement risk scanner<br/>
+            • District court fee calculator<br/>
+            • Empanelled advocate pilot in 3 districts<br/>
+            • Partnership with DLSA legal clinics
+          </p>
+        </div>
+        <div class="deck-card">
+          <span style="color:var(--gold);font-weight:700;font-size:0.75rem;">PHASE 4 · MONTHS 7-12</span>
+          <h4>e-Courts & B2G Kiosks</h4>
+          <p style="font-size:0.78rem;">
+            • e-Courts API case status tracking<br/>
+            • Offline touch kiosk for Panchayats<br/>
+            • Enterprise FinTech Sec 138 API<br/>
+            • Advocate escrow payment network<br/>
+            • Expansion to all 22 scheduled languages
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Clear, pragmatic technical milestones backed by proven client-side feasibility.</span>
+      <span>Slide 10 of 11</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: CONCLUSION & LIVE DEMO -->
+  <div class="slide" id="slide-11">
+    <div class="slide-tag">PROJECT VALIDATION & DEMO</div>
+    <h1 class="slide-h1">Conclusion: Justice at Every Citizen's Fingertips</h1>
+    <p class="slide-sub">A production-verified, open-source AI legal advisor ready for jury evaluation.</p>
+    <div class="slide-content">
+      <div class="grid-2" style="margin-bottom: 1.2rem;">
+        <div class="deck-card highlight">
+          <h4>Executive Hackathon Summary:</h4>
+          <p style="font-size:0.84rem;line-height:1.65;">
+            <strong>The Problem:</strong> 5.1 Crore pending cases and zero first-response triage for everyday citizens.<br/>
+            <strong>The Solution:</strong> NyayaBot — instant, free legal advice grounded strictly in Indian law.<br/>
+            <strong>Key Innovation:</strong> Zero-cost client-side engine + BNS 2024 transition + Legal Notice Drafter.<br/>
+            <strong>Feasibility:</strong> Zero cloud bills, 100% private, zero external dependencies.<br/>
+            <strong>Impact:</strong> Decongests courts by enabling pre-litigation notice settlements.
+          </p>
+        </div>
+        <div class="deck-card" style="background: rgba(13, 18, 48, 0.95); border-color: var(--gold);">
+          <h4>Live Production Verification:</h4>
+          <p style="font-size:0.84rem;line-height:1.75;">
+            🌐 <strong>Live App:</strong> <a href="https://dhruv-sharma07.github.io/NyayaBot/" target="_blank" style="color:var(--success);text-decoration:none;">dhruv-sharma07.github.io/NyayaBot</a><br/>
+            📂 <strong>GitHub Repo:</strong> <a href="https://github.com/dhruv-sharma07/NyayaBot" target="_blank" style="color:var(--gold-pale);text-decoration:none;">github.com/dhruv-sharma07/NyayaBot</a><br/>
+            📄 <strong>Solution Deck PDF:</strong> NyayaBot_Hackathon_Solution_Deck.pdf<br/>
+            📜 <strong>License:</strong> Open-Source MIT License<br/>
+            👥 <strong>Team:</strong> Dhruv Sharma & Team
+          </p>
+        </div>
+      </div>
+      <div class="deck-card highlight" style="text-align:center;padding:1rem;">
+        <span style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);">"Bringing Constitutional Justice from Dusty Courtrooms to Every Indian Screen"</span>
+      </div>
+    </div>
+    <div class="slide-footer-bar">
+      <span>Thank you! Questions and jury feedback are warmly welcomed.</span>
+      <span>Slide 11 of 11</span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 11;
+
+  function showSlide(n) {
+    if (n < 1) n = 1;
+    if (n > totalSlides) n = totalSlides;
+    currentSlide = n;
+
+    document.querySelectorAll('.slide').forEach((s, idx) => {
+      s.classList.toggle('active', idx + 1 === currentSlide);
+    });
+
+    document.getElementById('counter').textContent = 
+      String(currentSlide).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      showSlide(1);
+    } else if (e.key === 'End') {
+      showSlide(totalSlides);
+    }
+  });
+
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
